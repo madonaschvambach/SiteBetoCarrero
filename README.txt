@@ -146,7 +146,7 @@ USUARIOS
 ---------------
 Para testar o site como usuário, tem-se:
 1. usuario: fernanda_lima | senha: admin -> este usuário é limitado
-2. usuario: madona_schvambach | senha: admin -> este é um administrador
+2. usuario: admin | senha: admin -> este é um administrador
 
 PASSO A PASSO PARA RODAR O PROJETO
 ---------------
