@@ -1,0 +1,15 @@
+<?php
+/**
+ * @author Bruno Massa
+ * @file
+ *  Live Translation (un)install functions
+ */
+
+function live_translation_uninstall() {
+  // Delete global variables
+  variable_del('live_translation_servers');
+  variable_del('live_translation_import_status');
+  variable_del('live_translation_import_time');
+  variable_del('live_translation_update_time');
+  variable_del('live_translation_update_untranslated');
+}

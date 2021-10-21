@@ -1,0 +1,14 @@
+core            = "7.x"
+description     = "Update your translations easily."
+name            = "Live Translation"
+dependencies[]  = locale
+dependencies[]  = update
+project = "live_translation"
+version = "7.x-1.x-dev"
+
+
+; Information added by Drupal.org packaging script on 2019-04-03
+version = "7.x-1.1"
+core = "7.x"
+project = "live_translation"
+datestamp = "1554319384"

@@ -1,0 +1,10 @@
+name: my-first-drupal8-app
+recipe: drupal8
+config:
+  webroot: .
+excludes:
+  - vendor
+  - node_modules
+  - modules/contrib
+#services:appserver:build:
+#  - composer install

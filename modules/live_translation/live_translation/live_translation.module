@@ -1,0 +1,158 @@
+<?php
+/**
+ * @author Bruno Massa
+ * @file
+ *  Live Translation module's main file.
+ *
+ *  Only hooks and fundamental functions are placed here.
+ */
+
+// Interval between translation updates: 3 days
+DEFINE('LIVE_TRANSLATION_LIMIT', 60*60*24*2);
+
+// Translation status
+DEFINE('LIVE_TRANSLATION_STATUS_UNKNOWN', 0);
+DEFINE('LIVE_TRANSLATION_STATUS_OUTDATE', 1);
+DEFINE('LIVE_TRANSLATION_STATUS_OK',      2);
+DEFINE('LIVE_TRANSLATION_STATUS_PROJECT', 3);
+DEFINE('LIVE_TRANSLATION_STATUS_VERSION', 4);
+
+// Translation server URL (defined by Live Translation - Server module)
+DEFINE('LIVE_TRANSLATION_SERVER_URL', 'admin/live-translation/export');
+
+/**
+ * Implementation of hook_cron().
+ */
+function live_translation_cron() {
+  module_load_include('update.inc', 'live_translation');
+  if (_live_translation_status(TRUE) <= LIVE_TRANSLATION_STATUS_OUTDATE) {
+    _live_translation_update(TRUE);
+  }
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function live_translation_menu() {
+  $items['admin/reports/live-translation'] = array(
+    'access arguments'  => array('update translations'),
+    'description'       => 'Get a status report about available translations for your installed modules and theme',
+    'file'              => 'live_translation.admin.inc',
+    'page callback'     => '_live_translation_report',
+    'title'             => 'Available translations',
+  );
+  $items['admin/config/regional/live-translation'] = array(
+    'access arguments'  => array('update translations'),
+    'description'       => 'Set the translation server URLs',
+    'file'              => 'live_translation.admin.inc',
+    'page callback'     => 'drupal_get_form',
+    'page arguments'    => array('_live_translation_settings'),
+    'title'             => 'Live Translation',
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function live_translation_perm() {
+  return array('update translations');
+}
+
+/**
+ * Implementation of hook_requirements().
+ */
+function live_translation_requirements($phase) {
+  if ($phase == 'runtime') {
+    module_load_include('inc', 'live_translation');
+    $requirements['live_translation']['title']        = t('Translation updates');
+    switch (_live_translation_status(TRUE)) {
+      case LIVE_TRANSLATION_STATUS_OUTDATE:
+        $requirements['live_translation']['value']        = t('New translations available');
+        $requirements['live_translation']['severity']     = REQUIREMENT_ERROR;
+        $requirements['live_translation']['description']  = t('There are new strings translated on the translation servers. Go to <a href="admin/reports/live-translation">translation status page</a>.');
+        break;
+      case LIVE_TRANSLATION_STATUS_UNKNOWN:
+        $requirements['live_translation']['value']        = t('No update data available');
+        $requirements['live_translation']['severity']     = REQUIREMENT_WARNING;
+        $requirements['live_translation']['description']  = t('There is a long time you do not check the translation status with the server. Configure cron or <a href="/admin/reports/live-translation/update">check it now</a>.');
+        break;
+      default:
+        $requirements['live_translation']['value']        = t('Up to date');
+    }
+    return $requirements;
+  }
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function live_translation_theme() {
+  return array(
+    'live_translation_report' => array(
+      'arguments' => array('data' => NULL),
+    ),
+  );
+}
+
+/**
+ * Updates all translations.
+ */
+function live_translation_update_all() {
+  module_load_include('update.inc', 'live_translation');
+  $data = _live_translation_get_status();
+
+  // in next few lines we create operations array with modules, which need translation updates
+  foreach ($data as $langcode => $language) {
+    foreach ($language as $mod => $module) {
+      if ($module['status'] == LIVE_TRANSLATION_STATUS_OUTDATE) {
+        $operations[] = array(
+          'live_translation_import_batch',
+          array($mod, $langcode)
+        );
+      }
+    }
+  }
+  $batch = array(
+    'operations' => $operations,
+    'finished' => 'live_translation_update_all_finished',
+    'title' => t('Importing module translations'),
+    'init_message' => t('Translations import starts'),
+    'progress_message' => t('Imported @current of @total'),
+    'error_message' => t('The importation process is beginning')
+  );
+
+  batch_set($batch);
+  batch_process('admin/reports/live-translation');
+}
+
+/**
+ * Run translation import for module
+ * @param $mod - module name
+ * @param $langcode - language code (for example: ru)
+ * @param $context
+ * @return unknown_type
+ */
+function live_translation_import_batch ($mod, $langcode, &$context) {
+  module_load_include('update.inc', 'live_translation');
+  _live_translation_import($mod, $langcode, 1);
+  $context['finished'] = 1;
+}
+
+/**
+ * Runs when update all operation finished
+ * @return unknown_type
+ */
+function live_translation_update_all_finished($success, $results, $operations) {
+  if ($success) {
+    drupal_set_message(t('Translation import complete'));
+  }
+  else {
+    $error_operation = reset($operations);
+    $operation = array_shift($error_operation);
+    $arguments = array_shift($error_operation);
+    $arguments_as_string = implode(', ', $arguments);
+    watchdog('live_translation', "Error when callinh operation '%s'('%s')", array($operation, $arguments_as_string));
+    drupal_set_message(t('An error occurred and has been recorded in the system log'), 'error');
+  }
+}

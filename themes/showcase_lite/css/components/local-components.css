@@ -1,0 +1,83 @@
+/**
+ * @file
+ * Use this CSS file to override components CSS rules
+ */
+
+/* global */
+.container .col-sm-6 .footer-second .region-footer-second p{
+    padding-top: 8px;
+}
+.region--no-separator .container .col-md-12 .featured-top__section{
+    padding-top: 0px;
+    padding-bottom: 40px;
+}
+/* #toolbar-administration .dialog-off-canvas-main-canvas .page-container .header-container .sticky-wrapper .header-third{
+    padding-right: 20px;
+} */
+#toolbar-administration .header-container .row .col-md-2{
+    width: 25%;
+}
+
+/* página sobre */
+.page-node-type-sobre #block-showcase-lite-content .content{
+    border-width: medium;
+    border-style: solid;  
+    padding: 18px;
+}
+.page-node-type-sobre .group-right div {
+    height: 240px;
+    margin-bottom: 5px;
+    margin-top: 65px; 
+}
+.page-node-type-sobre .group-left div {
+    height: 240px;
+    margin-bottom: 5px;
+    margin-top: 65px; 
+}
+.page-node-type-sobre .group-left .field--type-image {
+    margin-top: 40px;
+    text-align: center;
+} 
+.page-node-type-sobre .group-right .field--type-image {
+    margin-top: 40px;
+    text-align: center;
+}
+.page-node-type-sobre .region-content .field--name-field-texto-linha-02,
+.page-node-type-sobre .region-content .field--name-field-texto-linha-06,
+.page-node-type-sobre .region-content .field--name-field-texto-linha-08 {
+    margin-top: 72px;
+}
+.page-node-type-sobre .region-content .field--name-field-texto-linha-04,
+.page-node-type-sobre .region-content .field--name-field-texto-linha-07 {
+    height: 210px;
+    margin-top: 100px;
+}
+
+/* página home */
+.page-node-type-home .main-content .col-md-12 .main-content__section {
+    text-align: center;
+}
+
+/* página de atração */
+.path-atracoes-beto-carrero .grid h2 {
+    height: 100px;
+    padding-top: 30px;
+}
+.path-atracoes-beto-carrero #block-showcase-lite-content .view-atracao .view-header{
+    text-align: center;
+}
+.path-atracoes-beto-carrero #block-showcase-lite-content .view-atracao .view-filters .form-select{
+    width: 250px;
+}
+.path-atracoes-beto-carrero .main-content__section .block-system-main-block .views-element-container .view-header h3{
+    font-size: 35px;
+}
+.path-atracoes-beto-carrero .main-content__section .block-system-main-block .views-element-container .view-filters{
+    padding-top: 30px;
+    padding-bottom: 40px;
+}
+.path-atracoes-beto-carrero #block-showcase-lite-content .content .view-content{
+    border-width: medium;
+    border-style: solid;
+    padding: 0px 18px 18px 18px;
+}
