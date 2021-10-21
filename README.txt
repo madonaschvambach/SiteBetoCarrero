@@ -141,3 +141,29 @@ MORE INFORMATION
  * For information about the wide range of available support options, visit
    https://www.drupal.org and click on Community and Support in the top or
    bottom navigation.
+
+USUARIOS
+---------------
+Para testar o site como usuário, tem-se:
+1. usuario: fernanda_lima | senha: admin -> este usuário é limitado
+2. usuario: madona_schvambach | senha: admin -> este é um administrador
+
+PASSO A PASSO PARA RODAR O PROJETO
+---------------
+Deve-se ter instalado o lando, composer, php, git e docker.
+ATENÇÂO: lando irá automaticamente instalar o docker, para isto, deve aceitar que o lando instale o docker durante a instalação.
+Lando: https://github.com/lando/lando/releases 
+Composer: https://getcomposer.org/download/
+PHP: https://windows.php.net/download/
+GIT: https://git-scm.com/downloads
+
+Após a instalação destes softwares, vá a pasta raiz e rode: 
+
+1. lando start
+2. lando composer install
+
+Agora precisamos importar o banco.
+
+3. lando db-import drupal8.2021-10-20-1634760050.sql
+
+Após isso, o seu site já estará rodando. Caso não, pare o container no docker e depois rode novamente. Caso persista, dê um lando stop e depois um lando start novamente.
